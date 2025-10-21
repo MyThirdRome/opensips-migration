@@ -1,0 +1,63 @@
+================================================================================
+QUICK INSTALL: Add Web Interface to Your Current Server
+================================================================================
+
+Your server (212.162.155.183) already has OpenSIPs and database installed.
+This script will ADD the web interface without reinstalling anything.
+
+STEP 1: Upload Files to Your Server
+================================================================================
+
+From your current Replit directory, download these files:
+  • install_web_interface_only.sh
+  • web_interface.tar.gz
+  • apache_config.tar.gz
+
+Or use scp to upload:
+  scp install_web_interface_only.sh web_interface.tar.gz apache_config.tar.gz root@212.162.155.183:/root/
+
+STEP 2: Run the Installation Script
+================================================================================
+
+On your server (212.162.155.183), run:
+
+  cd /root/
+  chmod +x install_web_interface_only.sh
+  sudo ./install_web_interface_only.sh
+
+STEP 3: Access Your Web Interface
+================================================================================
+
+After installation (takes 2-3 minutes), open your browser:
+
+  http://212.162.155.183/
+
+You'll see the OpenSIPs Control Panel login page!
+
+================================================================================
+WHAT THIS SCRIPT DOES:
+================================================================================
+
+✓ Installs Apache web server
+✓ Installs PHP and required modules
+✓ Extracts your web interface files (5.4 MB)
+✓ Restores Apache configuration
+✓ Sets proper permissions
+✓ Configures database connection
+✓ Opens firewall port 80
+✓ Starts Apache
+
+Total time: 2-3 minutes
+
+================================================================================
+NO RISK:
+================================================================================
+
+• Does NOT touch your existing OpenSIPs installation
+• Does NOT modify your database
+• Does NOT restart OpenSIPs
+• ONLY installs Apache + PHP + Web Interface
+
+Safe to run on your live server!
+
+================================================================================
