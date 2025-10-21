@@ -1,0 +1,42 @@
+{
+  "opensips_version": "version: opensips 3.0.3 (x86_64/linux)",
+  "config_dir": "/etc/opensips",
+  "database_type": "mysql",
+  "database_name": "opensips",
+  "os_info": {
+    "NAME": "CentOS Linux",
+    "VERSION": "7 (Core)",
+    "ID": "centos",
+    "ID_LIKE": "rhel fedora",
+    "VERSION_ID": "7",
+    "PRETTY_NAME": "CentOS Linux 7 (Core)",
+    "ANSI_COLOR": "0;31",
+    "CPE_NAME": "cpe:/o:centos:centos:7",
+    "HOME_URL": "https://www.centos.org/",
+    "BUG_REPORT_URL": "https://bugs.centos.org/",
+    "CENTOS_MANTISBT_PROJECT": "CentOS-7",
+    "CENTOS_MANTISBT_PROJECT_VERSION": "7",
+    "REDHAT_SUPPORT_PRODUCT": "centos",
+    "REDHAT_SUPPORT_PRODUCT_VERSION": "7",
+    "kernel": "3.10.0-1127.el7.x86_64"
+  },
+  "config_files": [
+    "/etc/opensips/tls/ca.conf.rpmsave",
+    "/etc/opensips/tls/user/user-calist.pem.rpmsave",
+    "/etc/opensips/tls/user/user-cert_req.pem.rpmsave",
+    "/etc/opensips/tls/user/user-cert.pem.rpmsave",
+    "/etc/opensips/tls/user/user-privkey.pem.rpmsave",
+    "/etc/opensips/tls/rootCA/certs/01.pem.rpmsave",
+    "/etc/opensips/tls/rootCA/cacert.pem.rpmsave",
+    "/etc/opensips/tls/rootCA/index.txt.rpmsave",
+    "/etc/opensips/tls/rootCA/private/cakey.pem.rpmsave",
+    "/etc/opensips/tls/request.conf.rpmsave",
+    "/etc/opensips/opensips.cfg",
+    "/etc/opensips/opensips.cfg.rpmsave",
+    "/etc/opensips/scenario_callcenter.xml.rpmsave",
+    "/etc/opensips/opensips-cli.cfg"
+  ],
+  "web_interface": {
+    "webserver": "none"
+  }
+}
