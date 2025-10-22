@@ -192,68 +192,21 @@ CP_CONFIG="/var/www/html/opensips-cp/config"
 if [ -d "$CP_CONFIG" ]; then
     echo "Updating Control Panel configurations..."
     
-    # Fix wholesale tools to use General database
-    for tool in carriers clients numbers ranges codes ivrs ivrs_old tviewer; do
-        if [ -f "$CP_CONFIG/tools/wholesale/$tool/db.inc.php" ]; then
-            cat > "$CP_CONFIG/tools/wholesale/$tool/db.inc.php" <<PHPCODE
-<?php
-\$module_id = "$tool";
-for (\$i = 0; \$i <= 20; \$i++) {
-    \$custom_config[\$module_id][\$i]['db_driver'] = "mysql";
-    \$custom_config[\$module_id][\$i]['db_host'] = "localhost";
-    \$custom_config[\$module_id][\$i]['db_user'] = "opensips";
-    \$custom_config[\$module_id][\$i]['db_name'] = "General";
-    \$custom_config[\$module_id][\$i]['db_pass'] = "opensipsrw";
-    \$custom_config[\$module_id][\$i]['db_port'] = "";
-}
-?>
-PHPCODE
-            echo "  ✓ $tool → General database"
-        fi
-    done
-    
-    # Fix system tools to use opensips database
-    if [ -d "$CP_CONFIG/tools/system" ]; then
-        find "$CP_CONFIG/tools/system" -name "db.inc.php" | while read config_file; do
-            tool=$(basename $(dirname "$config_file"))
-            cat > "$config_file" <<PHPCODE
-<?php
-\$module_id = "$tool";
-for (\$i = 0; \$i <= 20; \$i++) {
-    \$custom_config[\$module_id][\$i]['db_driver'] = "mysql";
-    \$custom_config[\$module_id][\$i]['db_host'] = "localhost";
-    \$custom_config[\$module_id][\$i]['db_user'] = "opensips";
-    \$custom_config[\$module_id][\$i]['db_name'] = "opensips";
-    \$custom_config[\$module_id][\$i]['db_pass'] = "opensipsrw";
-    \$custom_config[\$module_id][\$i]['db_port'] = "";
-}
-?>
-PHPCODE
-        done
-        echo "  ✓ System tools → opensips database"
-    fi
-    
-    # Fix admin/users/reports tools
-    for category in admin users reports; do
-        if [ -d "$CP_CONFIG/tools/$category" ]; then
-            find "$CP_CONFIG/tools/$category" -name "db.inc.php" | while read config_file; do
-                tool=$(basename $(dirname "$config_file"))
-                cat > "$config_file" <<PHPCODE
-<?php
-\$module_id = "$tool";
-for (\$i = 0; \$i <= 20; \$i++) {
-    \$custom_config[\$module_id][\$i]['db_driver'] = "mysql";
-    \$custom_config[\$module_id][\$i]['db_host'] = "localhost";
-    \$custom_config[\$module_id][\$i]['db_user'] = "opensips";
-    \$custom_config[\$module_id][\$i]['db_name'] = "opensips";
-    \$custom_config[\$module_id][\$i]['db_pass'] = "opensipsrw";
-    \$custom_config[\$module_id][\$i]['db_port'] = "";
-}
-?>
-PHPCODE
-            done
-            echo "  ✓ $category tools → opensips database"
-        fi
+    # Fix all db.inc.php files using sed (preserves existing structure)
+    find "$CP_CONFIG" -name "db.inc.php" -type f | while read config_file; do
+        # Backup
+        cp "$config_file" "${config_file}.backup_install"
+        
+        # Replace 'web' user with 'opensips'
+        sed -i "s/\['db_user'\]\s*=\s*\"web\"/['db_user'] = \"opensips\"/g" "$config_file"
+        sed -i "s/\[\"db_user\"\]\s*=\s*\"web\"/[\"db_user\"] = \"opensips\"/g" "$config_file"
+        
+        # Fix password
+        sed -i "s/\['db_pass'\]\s*=\s*\"webpassword123\"/['db_pass'] = \"opensipsrw\"/g" "$config_file"
+        sed -i "s/\[\"db_pass\"\]\s*=\s*\"webpassword123\"/[\"db_pass\"] = \"opensipsrw\"/g" "$config_file"
+        
+        # Uncomment db_port lines
+        sed -i 's|^//\s*\$custom_config\[\$module_id\]\[[0-9]*\]\[.db_port.\].*|\$custom_config[\$module_id][0]["db_port"] = "";|g' "$config_file"
     done
     
     # Update main config
@@ -261,10 +214,9 @@ PHPCODE
         sed -i 's/\$config->db_user\s*=.*/\$config->db_user = "opensips";/' "$CP_CONFIG/db.inc.php"
         sed -i 's/\$config->db_pass\s*=.*/\$config->db_pass = "opensipsrw";/' "$CP_CONFIG/db.inc.php"
         sed -i 's/\$config->db_name\s*=.*/\$config->db_name = "opensips";/' "$CP_CONFIG/db.inc.php"
-        echo "  ✓ Main config updated"
     fi
     
-    echo -e "${GREEN}✓ All Control Panel configs configured${NC}"
+    echo -e "${GREEN}✓ All Control Panel configs updated${NC}"
 fi
 
 # Enable Apache and start
